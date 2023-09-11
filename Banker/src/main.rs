@@ -1,6 +1,6 @@
+#[macro_use] extern crate text_io;
 
-
-    
+   
 use std::io;
 const N: i32 = 5;
 static mut arrmax: [[i32; 1]; 100] =  [[100]; 100];
@@ -14,31 +14,37 @@ static mut r: String = String::new();
 
 
 
+
+
+
+
 fn input()
 {
-    let i = 0;
-    let j = 0;
+    let mut i = 0;
+    let mut j = 0;
     
     
     println!("Enter the no of Processes\t"); 
     
-    io::stdin().read_line(&mut n) 
+    io::stdin().read_line(unsafe { &mut n }) 
               .ok() 
               .expect("Failed to read amount"); 
     
     println!("Enter the no of Resource Instances\t"); 
      
-    io::stdin().read_line(&mut r) 
+    io::stdin().read_line(unsafe { &mut r }) 
               .ok() 
               .expect("Failed to read amount"); 
-    let n1:usize = n.parse().unwrap();
-    let r1:usize = r.parse().unwrap();
-    cout << "Enter the Max Matrix\n";
+    let n1:usize = unsafe { n.parse().unwrap() };
+    let r1:usize = unsafe { r.parse().unwrap() };
+    println!( "Enter the Max Matrix\n");
     while true
     {
         while true
         {
-            cin >> unsafe { arrmax }[i][j];
+            let b: i32 = read!();
+            b >> unsafe { arrmax }[i][j];
+            
             j=j+1;
             if(j>= r1){
             break;
@@ -51,12 +57,13 @@ fn input()
     }
     i = 0;
     j = 0;
-    cout << "Enter the Allocation Matrix\n";
+    println!("Enter the Allocation Matrix\n");
     while true
     {
         while true
-        {
-            cin >> unsafe { allocated }[i][j];
+        {   
+            let b: i32 = read!();
+            b >> unsafe { allocated }[i][j];
             j=j+1;
             if(j>= r1){
             break;
@@ -69,10 +76,11 @@ fn input()
     }
     i=0;
     j=0;
-    cout << "Enter the available Resources\n";
+    println!("Enter the available Resources\n");
     while true
         {
-            cin >> unsafe { available }[j];
+            let b: i32 = read!();
+            b >> unsafe { available }[j];
             j=j+1;
             if(j>= r1){
             break;
@@ -81,17 +89,17 @@ fn input()
 }
 fn show()
 {
-    let n1:usize = n.parse().unwrap();
-    let r1:usize = r.parse().unwrap();
-    let i = 0;
-    let j = 0;
+    let n1:usize = unsafe { n.parse().unwrap() };
+    let r1:usize = unsafe { r.parse().unwrap() };
+    let mut i = 0;
+    let mut j = 0;
     println!("Process\t Allocation\t Max\t Available\t");
     while true
     {
-        cout << "\nP" << i + 1 << "\t ";
+        println!("\nP {} \t", i+1); 
         while true
         {
-            cout << unsafe { allocated }[i][j] << " ";
+            println!("{} ", unsafe { allocated }[i][j]);
             j=j+1;
             if(j>= r1){
                 j=0;
@@ -101,7 +109,7 @@ fn show()
         println!("\t\t");
         while true
         {
-            cout << unsafe { arrmax }[i][j] << " ";
+            println!("{} ", unsafe { arrmax }[i][j]);
             j=j+1;
             if(j>= r1){
                 j=0;
@@ -112,7 +120,7 @@ fn show()
         if (i == 0)
         {
             while true{
-                cout << unsafe { available }[j] << " ";
+                println!("{} ", unsafe { available }[j]);
                 j=j+1;
             if(j>= r1){
                 j=0;
@@ -133,22 +141,22 @@ fn cal()
         finish[q] = 0; 
     }
     let temp = 0;
-    let mut need =  [[100]; 100];
-    let flag = 1;
-    let k = 0;
-    let c1 = 0;
+    let mut flag = 1;
+    let mut k = 0;
+    let mut c1 = 0;
     let mut dead =  [100];
     let mut safe =  [100];
-    let i = 0;
-    let j = 0;
-    let n1:usize = n.parse().unwrap();
-    let r1:usize = r.parse().unwrap();
+    let mut i = 0;
+    let mut j = 0;
+    let n1:usize = unsafe { n.parse().unwrap() };
+    let r1:usize = unsafe { r.parse().unwrap() };
     //find need matrix
     while true
     {
         while true
         {
-            need[i][j] = unsafe { arrmax }[i][j] - unsafe { allocated }[i][j];
+            let z2 = unsafe { arrmax }[i][j] - unsafe { allocated }[i][j];
+            z2 >> unsafe { need }[i][j];
             if(j>= r1){
                 j=0;
                 break;
@@ -164,17 +172,18 @@ fn cal()
         flag = 0;
         while true
         {
-            let c = 0;
+            let mut c = 0;
             while true
             {
-                if ((finish[i] == 0) && (need[i][j] <= unsafe { available }[j]))
+                if ((finish[i] == 0) && (unsafe { need }[i][j] <= unsafe { available }[j]))
                 {
                     c=c+1;
                     if (c == r1)
                     {
                         while true
-                        {
-                            unsafe { available }[k] =  unsafe { available }[k] + unsafe { allocated }[i][j];
+                        {   
+                            let z = &unsafe { available }[k] + &unsafe { allocated }[i][j];
+                            z >> unsafe { available }[k];
                             finish[i] = 1;
                             flag = 1;
                             if(k>= r1){
@@ -221,7 +230,7 @@ fn cal()
         println!("\n\nSystem is in Deadlock and the Deadlock process are\n");
         while true
         {
-            cout << "P" << dead[i] << "\t";
+            println!("P {} \t", dead[i]);
             if(i>= n1){
                 i=0;
                 break;
